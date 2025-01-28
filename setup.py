@@ -46,15 +46,22 @@ def setup_reid(root):
 
         # create the models folder inside repo, weights will be added to that folder later on
         models_folder_path = os.path.join(rep_path, repo_name, "models")
-        os.system(f"mkdir {models_folder_path}")
+        if not os.path.exists(models_folder_path):
+            print(f'{models_folder_path} does not exist, creating')
+            # os.system(f"mkdir {models_folder_path}")
+            os.mkdir(f"{models_folder_path}")
 
         url = "https://drive.google.com/uc?export=download&id=1w9yzdP_5oJppGIM4gs3cETyLujanoHK8&confirm=t&uuid=fed3cb8a-1fad-40bd-8922-c41ededc93ae&at=ALgDtsxiC0WTza4g47gqC5VPyWg4:1679009047787"
         save_path = os.path.join(models_folder_path, "dukemtmcreid_resnet50_256_128_epoch_120.ckpt")
-        urllib.request.urlretrieve(url, save_path)
+        if not os.path.exists(save_path):
+            print(f'{save_path} does not exist, downloading from {url}')
+            urllib.request.urlretrieve(url, save_path)
 
         url = "https://drive.google.com/uc?export=download&id=1ZFywKEytpyNocUQd2APh2XqTe8X0HMom&confirm=t&uuid=450bb8b7-b3d0-4465-b0c9-bb6f066b205e&at=ALgDtswylGfYgY71u8ZmWx4CfhJX:1679008688985"
         save_path = os.path.join(models_folder_path, "market1501_resnet50_256_128_epoch_120.ckpt")
-        urllib.request.urlretrieve(url, save_path)
+        if not os.path.exists(save_path):
+            print(f'{save_path} does not exist, downloading from {url}')
+            urllib.request.urlretrieve(url, save_path)
 
     if not env_name in get_conda_envs():
         make_conda_env(env_name, libs="python=3.8")
@@ -121,9 +128,12 @@ def download_models_common(root_dir):
     url = cfg.dataset['SoccerNet']['pose_model_url']
     models_folder_path = os.path.join(rep_path, repo_name, "checkpoints")
     if not os.path.exists(models_folder_path):
-        os.system(f"mkdir {models_folder_path}")
+        print(f'{models_folder_path} does not exist. Create it now.')
+        # os.system(f"mkdir {models_folder_path}")
+        os.mkdir(f"{models_folder_path}")
     save_path = os.path.join(rep_path, "ViTPose", "checkpoints", "vitpose-h.pth")
     if not os.path.isfile(save_path):
+        print(f'Downloading model from {url}')
         gdown.download(url, save_path)
 
 def download_models(root_dir, dataset):
