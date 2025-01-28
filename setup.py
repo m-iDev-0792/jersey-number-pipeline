@@ -46,10 +46,14 @@ def setup_reid(root):
 
         # create the models folder inside repo, weights will be added to that folder later on
         models_folder_path = os.path.join(rep_path, repo_name, "models")
-        if not os.path.exists(models_folder_path):
-            print(f'{models_folder_path} does not exist, creating')
-            # os.system(f"mkdir {models_folder_path}")
-            os.mkdir(f"{models_folder_path}")
+        try_num = 0
+        while try_num < 10:
+            if not os.path.exists(models_folder_path):
+                print(f'{models_folder_path} does not exist. Create it now. pwd is {os.getcwd()}')
+                os.mkdir(f"{models_folder_path}")
+                try_num += 1
+            else:
+                break            
 
         url = "https://drive.google.com/uc?export=download&id=1w9yzdP_5oJppGIM4gs3cETyLujanoHK8&confirm=t&uuid=fed3cb8a-1fad-40bd-8922-c41ededc93ae&at=ALgDtsxiC0WTza4g47gqC5VPyWg4:1679009047787"
         save_path = os.path.join(models_folder_path, "dukemtmcreid_resnet50_256_128_epoch_120.ckpt")
@@ -127,10 +131,14 @@ def download_models_common(root_dir):
 
     url = cfg.dataset['SoccerNet']['pose_model_url']
     models_folder_path = os.path.join(rep_path, repo_name, "checkpoints")
-    if not os.path.exists(models_folder_path):
-        print(f'{models_folder_path} does not exist. Create it now.')
-        # os.system(f"mkdir {models_folder_path}")
-        os.mkdir(f"{models_folder_path}")
+    try_num = 0
+    while try_num < 10:
+        if not os.path.exists(models_folder_path):
+            print(f'{models_folder_path} does not exist. Create it now. pwd is {os.getcwd()}')
+            os.mkdir(f"{models_folder_path}")
+            try_num += 1
+        else:
+            break
     save_path = os.path.join(rep_path, "ViTPose", "checkpoints", "vitpose-h.pth")
     if not os.path.isfile(save_path):
         print(f'Downloading model from {url}')
