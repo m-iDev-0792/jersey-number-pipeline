@@ -127,10 +127,10 @@ def setup_str(root):
 
 def download_models_common(root_dir):
     repo_name = "ViTPose"
-    rep_path = "./pose"
+    rep_path = "pose"
 
     url = cfg.dataset['SoccerNet']['pose_model_url']
-    models_folder_path = os.path.join(rep_path, repo_name, "checkpoints")
+    models_folder_path = os.path.join(root_dir, rep_path, repo_name, "checkpoints")
     try_num = 0
     while try_num < 10:
         if not os.path.exists(models_folder_path):
@@ -139,7 +139,7 @@ def download_models_common(root_dir):
             try_num += 1
         else:
             break
-    save_path = os.path.join(rep_path, "ViTPose", "checkpoints", "vitpose-h.pth")
+    save_path = os.path.join(root_dir, rep_path, "ViTPose", "checkpoints", "vitpose-h.pth")
     if not os.path.isfile(save_path):
         print(f'Downloading model from {url}')
         gdown.download(url, save_path)
