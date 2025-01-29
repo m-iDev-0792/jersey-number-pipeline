@@ -41,9 +41,12 @@ def generate_features(input_folder, output_folder, model_version='res50_market')
     cfg.merge_from_file(CONFIG_FILE)
     opts = ["MODEL.PRETRAIN_PATH", MODEL_FILE, "MODEL.PRETRAINED", True, "TEST.ONLY_TEST", True, "MODEL.RESUME_TRAINING", False]
     cfg.merge_from_list(opts)
-    
+    model_path = cfg.MODEL.PRETRAIN_PATH
+    print(f"centroid_reid: generate_features() Ready to loading from {model_path}, cwd {os.getcwd()}")
+    model_path = model_path.replace('//', '/')
+    print(f"centroid_reid: generate_features() Loading from {model_path}, cwd {os.getcwd()}")
     use_cuda = True if torch.cuda.is_available() and cfg.GPU_IDS else False
-    model = CTLModel.load_from_checkpoint(cfg.MODEL.PRETRAIN_PATH, cfg=cfg)
+    model = CTLModel.load_from_checkpoint(model_path, cfg=cfg)
 
     # print("Loading from " + MODEL_FILE)
     if use_cuda:
