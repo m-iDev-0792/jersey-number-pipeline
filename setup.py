@@ -68,7 +68,7 @@ def setup_reid(root):
             urllib.request.urlretrieve(url, save_path)
 
     if not env_name in get_conda_envs():
-        make_conda_env(env_name, libs="python=3.8")
+        make_conda_env(env_name, libs="python=3.11")
         cwd = os.getcwd()
         os.chdir(os.path.join(rep_path, repo_name))
         os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
@@ -92,10 +92,10 @@ def setup_pose(root):
 
     os.chdir(root)
     if not env_name in get_conda_envs():
-        make_conda_env(env_name, libs="python=3.8")
+        make_conda_env(env_name, libs="python=3.11")
 
         os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
-        os.system(f"conda run --live-stream -n {env_name} pip install  mmcv-full==1.4.8 -f https://download.openmmlab.com/mmcv/dist/cu111/torch1.9.0/index.html")
+        os.system(f"conda run --live-stream -n {env_name} pip install mmcv==2.0.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html")
 
         os.chdir(os.path.join(root, rep_path, "ViTPose"))
         os.system(f"conda run --live-stream -n {env_name} pip install -v -e .")
@@ -118,10 +118,11 @@ def setup_str(root):
     os.chdir(os.path.join(rep_path, repo_name))
 
     if not env_name in get_conda_envs():
-        make_conda_env(env_name, libs="python=3.9")
-        os.system(f"make torch-cu117")
+        make_conda_env(env_name, libs="python=3.11")
+        cuda_ver = 'cu118'
+        os.system(f"make torch-{cuda_ver}")
         os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
-        os.system(f"conda run --live-stream -n {env_name} pip install -r requirements/core.cu117.txt -e .[train,test]")
+        os.system(f"conda run --live-stream -n {env_name} pip install -r requirements/core.{cuda_ver}.txt -e .[train,test]")
 
     os.chdir(root)
 
