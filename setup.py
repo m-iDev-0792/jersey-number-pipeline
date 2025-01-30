@@ -68,7 +68,7 @@ def setup_reid(root):
             urllib.request.urlretrieve(url, save_path)
 
     if not env_name in get_conda_envs():
-        make_conda_env(env_name, libs="python=3.11")
+        make_conda_env(env_name, libs="python=3.9")
         cwd = os.getcwd()
         os.chdir(os.path.join(rep_path, repo_name))
         os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
