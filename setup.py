@@ -37,7 +37,7 @@ def get_conda_envs():
 def setup_reid(root):
     env_name  = cfg.reid_env
     repo_name = "centroids-reid"
-    src_url   = "https://github.com/mikwieczorek/centroids-reid.git"
+    src_url   = "https://github.com/m-iDev-0792/centroids-reid.git"
     rep_path  = "./reid"
 
     if not repo_name in os.listdir(rep_path):
