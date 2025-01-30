@@ -119,7 +119,7 @@ def setup_str(root):
 
     if not env_name in get_conda_envs():
         make_conda_env(env_name, libs="python=3.9")
-        cuda_ver = 'cu118'
+        cuda_ver = 'cu117'
         os.system(f"make torch-{cuda_ver}")
         os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
         os.system(f"conda run --live-stream -n {env_name} pip install -r requirements/core.{cuda_ver}.txt -e .[train,test]")
