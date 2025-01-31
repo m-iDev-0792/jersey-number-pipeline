@@ -46,6 +46,7 @@ def generate_features(input_folder, output_folder, model_version='res50_market',
     print(f"generate_features() Ready to loading from {model_path}, cwd {os.getcwd()}")
     model_path = model_path.replace('//', '/')
     print(f"generate_features() Loading from {model_path}, cwd {os.getcwd()}")
+
     use_cuda = True if torch.cuda.is_available() and cfg.GPU_IDS else False
     model = CTLModel.load_from_checkpoint(model_path, cfg=cfg)
 
