@@ -60,7 +60,7 @@ def generate_features(input_folder, output_folder, model_version='res50_market')
     tracks = os.listdir(input_folder)
     transforms_base = ReidTransforms(cfg)
     val_transforms = transforms_base.build_transforms(is_train=False)
-
+    print(f'centroid_reid: generate_features() start to generate features...')
     for track in tqdm(tracks):
         features = []
         track_path = os.path.join(input_folder, track)
@@ -77,7 +77,7 @@ def generate_features(input_folder, output_folder, model_version='res50_market')
 
         np_feat = np.array(features)
         with open(output_file, 'wb') as f:
-            print(f'generate_features() Writing {output_file}.')
+            # print(f'generate_features() Writing {output_file}.')
             np.save(f, np_feat)
 
 
