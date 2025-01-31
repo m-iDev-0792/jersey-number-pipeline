@@ -92,6 +92,7 @@ def main():
     results = []
 
     # process each image
+    total_images_num = len(img_keys)
     for i in range(len(img_keys)):
         # get bounding box annotations
         image_id = img_keys[i]
@@ -119,7 +120,7 @@ def main():
             dataset_info=dataset_info,
             return_heatmap=return_heatmap,
             outputs=output_layer_names)
-
+        print(f"pose.py: main() ({i}/{total_images_num}) processed image {image['file_name']}")
         # print(pose_results)
         results.append(
             {"img_name": image['file_name'], "id": image_id, "keypoints": pose_results[0]['keypoints'].tolist()})
@@ -144,6 +145,7 @@ def main():
 
     if args.out_json != '':
         with open(args.out_json, 'w') as fp:
+            print(f'pose.py: main() writing results to {args.out_json}...')
             json.dump({"pose_results": results}, fp)
 
 
