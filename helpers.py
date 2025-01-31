@@ -36,6 +36,64 @@ WIDTH_MIN = 30
 
 bias_for_digits = [0.06, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094]
 
+import subprocess
+import sys
+
+
+def execute_command(command):
+    """
+    Execute a command and display output in real-time, similar to os.system
+
+    Args:
+        command: Command to execute (string or list of strings)
+
+    Returns:
+        int: Return code from the command
+    """
+    print(f'Running command: {command}')
+    # Create process with pipe for stdout and stderr
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        shell=isinstance(command, str),
+        universal_newlines=True,
+        bufsize=1
+    )
+
+    # Function to handle output stream
+    def handle_stream(stream):
+        for line in stream:
+            sys.stdout.write(line)
+            sys.stdout.flush()
+
+    # Read stdout and stderr simultaneously
+    while True:
+        # Check stdout
+        stdout_line = process.stdout.readline()
+        if stdout_line:
+            sys.stdout.write(stdout_line)
+            sys.stdout.flush()
+
+        # Check stderr
+        stderr_line = process.stderr.readline()
+        if stderr_line:
+            sys.stderr.write(stderr_line)
+            sys.stderr.flush()
+
+        # Check if process has finished
+        if process.poll() is not None:
+            # Get remaining output
+            for line in process.stdout:
+                sys.stdout.write(line)
+                sys.stdout.flush()
+            for line in process.stderr:
+                sys.stderr.write(line)
+                sys.stderr.flush()
+            break
+
+    return process.returncode
+
 # Generate image JSON COCO format for ViTPose to consume
 def generate_json(file_names, json_file_path):
     img_id = 0
