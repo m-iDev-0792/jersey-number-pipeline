@@ -35,6 +35,7 @@ def get_conda_envs():
 
 
 def setup_reid(root):
+    print(f'setup_reid(): ======================= start =======================')
     env_name  = cfg.reid_env
     repo_name = "centroids-reid"
     src_url   = "https://github.com/m-iDev-0792/centroids-reid.git"
@@ -75,10 +76,12 @@ def setup_reid(root):
         os.system(f"conda run --live-stream -n {env_name} pip install -r requirements.txt")
 
         os.chdir(cwd)
+    print(f'setup_reid(): ======================= end =======================')
 
 # clone and install vitpose
 # download the model
 def setup_pose(root):
+    print(f'setup_pose(): ======================= start =======================')
     env_name  = cfg.pose_env
     repo_name = "ViTPose"
     src_url   = "https://github.com/ViTAE-Transformer/ViTPose.git"
@@ -100,11 +103,12 @@ def setup_pose(root):
         os.chdir(os.path.join(root, rep_path, "ViTPose"))
         os.system(f"conda run --live-stream -n {env_name} pip install -v -e .")
         os.system(f"conda run --live-stream -n {env_name} pip install timm==0.4.9 einops")
-
+    print(f'setup_pose(): ======================= end =======================')
 
 # clone and install str
 # download the model
 def setup_str(root):
+    print(f'setup_str(): ======================= start =======================')
     env_name  = cfg.str_env
     repo_name = "parseq"
     src_url   = "https://github.com/baudm/parseq.git"
@@ -125,8 +129,10 @@ def setup_str(root):
         os.system(f"conda run --live-stream -n {env_name} pip install -r requirements/core.{cuda_ver}.txt -e .[train,test]")
 
     os.chdir(root)
+    print(f'setup_str(): ======================= end =======================')
 
 def download_models_common(root_dir):
+    print(f'download_models_common(): ======================= start =======================')
     repo_name = "ViTPose"
     rep_path = "pose"
 
@@ -144,8 +150,10 @@ def download_models_common(root_dir):
     if not os.path.isfile(save_path):
         print(f'Downloading model from {url}')
         gdown.download(url, save_path)
+    print(f'download_models_common(): ======================= end =======================')
 
 def download_models(root_dir, dataset):
+    print(f'download_models(): ======================= start =======================')
     # download and save fine-tuned model
     save_path = os.path.join(root_dir, cfg.dataset[dataset]['str_model'])
     if not os.path.isfile(save_path):
@@ -156,8 +164,10 @@ def download_models(root_dir, dataset):
     if not os.path.isfile(save_path):
         source_url = cfg.dataset[dataset]['legibility_model_url']
         gdown.download(source_url, save_path)
+    print(f'download_models(): ======================= end =======================')
 
 def setup_sam(root_dir):
+    print(f'setup_sam(): ======================= start =======================')
     os.chdir(root_dir)
     repo_name = 'sam2'
     src_url = 'https://github.com/davda54/sam'
@@ -165,6 +175,7 @@ def setup_sam(root_dir):
     if not repo_name in os.listdir(root_dir):
         # clone source repo
         os.system(f"git clone --recurse-submodules {src_url} {os.path.join(root_dir, repo_name)}")
+    print(f'setup_sam(): ======================= end =======================')
 
 
 if __name__ == '__main__':
