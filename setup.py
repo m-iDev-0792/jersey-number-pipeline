@@ -102,6 +102,7 @@ def setup_pose(root):
 
         os.chdir(os.path.join(root, rep_path, "ViTPose"))
         os.system(f"conda run --live-stream -n {env_name} pip install -v -e .")
+        os.system(f"conda run --live-stream -n {env_name} pip install tqdm")
         os.system(f"conda run --live-stream -n {env_name} pip install timm==0.4.9 einops")
     print(f'setup_pose(): ======================= end =======================')
 
