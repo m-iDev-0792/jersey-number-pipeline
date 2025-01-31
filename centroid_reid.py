@@ -35,7 +35,7 @@ def get_specs_from_version(model_version):
     conf, weights = str(conf), str(weights)
     return conf, weights
 
-def generate_features(input_folder, output_folder, model_version='res50_market'):
+def generate_features(input_folder, output_folder, model_version='res50_market', b_overwrite_cache=False):
     print(f"generate_features() input_folder={input_folder}, output_folder={output_folder}")
     # load model
     CONFIG_FILE, MODEL_FILE = get_specs_from_version(model_version)
@@ -64,9 +64,15 @@ def generate_features(input_folder, output_folder, model_version='res50_market')
     for track in tqdm(tracks):
         features = []
         track_path = os.path.join(input_folder, track)
-        images = os.listdir(track_path)
+        if not os.path.isdir(track_path):
+            continue
         output_file = os.path.join(output_folder, f"{track}_features.npy")
+        if os.path.exists(output_file) and not b_overwrite_cache:
+            continue
+        images = os.listdir(track_path)
         for img_path in images:
+            if img_path.endswith('.DS_Store'):
+                continue
             img = cv2.imread(os.path.join(track_path, img_path))
             input_img = Image.fromarray(img)
             input_img = torch.stack([val_transforms(input_img)])
