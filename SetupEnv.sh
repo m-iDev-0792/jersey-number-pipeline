@@ -1,12 +1,13 @@
 # run this scripty by running "source SetupEnv.sh"
 
 conda init
-# echo y | conda create --name SoccerNet python=3.9
+echo y | conda create --name SoccerNet python=3.9
 conda activate SoccerNet
 pip install gdown
 pip install tqdm
 pip install SoccerNet
 pip install pandas
+pip install opencv-python
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
     echo "use CPU version torch on MacOS"
@@ -21,5 +22,5 @@ if [[ "$(uname -s)" == "Linux" ]]; then
   echo "Current platform is Linux"
   ehco y | apt-get install libgl1
 fi
-# python SetupSoccerNetDataset.py
+python SetupSoccerNetDataset.py
 python setup.py SoccerNet
