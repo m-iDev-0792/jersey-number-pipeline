@@ -4,7 +4,8 @@ import json
 import urllib.request
 import gdown
 import argparse
-
+import platform
+import helpers
 
 ###### common setup utils ##############
 
@@ -126,7 +127,13 @@ def setup_str(root):
     if not env_name in get_conda_envs():
         make_conda_env(env_name, libs="python=3.9")
         cuda_ver = 'cu117'
-        os.system(f"make torch-{cuda_ver}")
+        if platform.system() == 'Windows':
+            pwd = os.getcwd()
+            print(f'Copy {pwd}/../requirements to {pwd}/requirements')
+            # Windows does not have a shell terminal, so just copy prebuilt requirements
+            helpers.copy_folder_contents("../requirements", "requirements")
+        else:
+            os.system(f"make torch-{cuda_ver}")
         os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
         os.system(f"conda run --live-stream -n {env_name} pip install -r requirements/core.{cuda_ver}.txt -e .[train,test]")
 

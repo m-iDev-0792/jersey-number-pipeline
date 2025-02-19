@@ -39,6 +39,18 @@ bias_for_digits = [0.06, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094, 0.094,
 import subprocess
 import sys
 
+def copy_folder_contents(src, dst):
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+
+    for item in os.listdir(src):
+        src_item = os.path.join(src, item)
+        dst_item = os.path.join(dst, item)
+
+        if os.path.isfile(src_item):
+            shutil.copy2(src_item, dst_item)
+        elif os.path.isdir(src_item):
+            shutil.copytree(src_item, dst_item, dirs_exist_ok=True)
 
 def execute_command(command):
     """
