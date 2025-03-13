@@ -586,11 +586,14 @@ def identify_soccer_balls(image_dir, soccer_ball_list):
         if track_path.endswith('.DS_Store'):
             continue
         image_names = os.listdir(track_path)
+        image_names = [item for item in image_names if not item.startswith(".DS_Store")]
         sample = len(image_names) if len(image_names) < 10 else 10
         imgs = np.random.choice(image_names, size=sample, replace=False)
         width_list = []
         height_list = []
         for img_name in imgs:
+            if img_name.endswith('.DS_Store'):
+                continue
             img_path = os.path.join(track_path, img_name)
             img = cv2.imread(img_path)
             h, w = img.shape[:2]
@@ -872,6 +875,46 @@ def generate_crops_based(source, target, splits):
     for split in splits:
         print(f"Processing {split}")
         generate_crops_for_split(source, target, split)
+
+
+import time
+import json
+from datetime import datetime
+
+class SimpleTimeRecorder:
+    def __init__(self, task_name, json_file="timing_logs.json"):
+        self.task_name = task_name
+        self.json_file = json_file
+        self.start_time = None
+
+    def __enter__(self):
+        self.start_time = time.time()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        end_time = time.time()
+        elapsed_time = end_time - self.start_time
+        print(f"Task '{self.task_name}' took: {elapsed_time:.4f} s")
+
+        log_entry = {
+            "task_name": self.task_name,
+            "start_time": datetime.fromtimestamp(self.start_time).isoformat(),
+            "elapsed_time": elapsed_time
+        }
+
+        self.write_log(log_entry)
+
+    def write_log(self, log_entry):
+        try:
+            with open(self.json_file, "r") as f:
+                logs = json.load(f)
+        except FileNotFoundError:
+            logs = []
+
+        logs.append(log_entry)
+
+        with open(self.json_file, "w") as f:
+            json.dump(logs, f, indent=4)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
