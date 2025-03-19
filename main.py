@@ -313,6 +313,7 @@ def soccer_net_pipeline(args):
         if success:
             with SimpleTimeRecorder("Detect pose"):
                 print("Detecting pose")
+
                 if config.pose_detection_pipeline == 'vitpose':
                     print(f'Use [vitpose] to detect pose')
                     command = f"conda run --live-stream -n {config.pose_env} python pose.py {config.pose_home}/configs/body/2d_kpt_sview_rgb_img/topdown_heatmap/coco/ViTPose_huge_coco_256x192.py \
@@ -321,6 +322,7 @@ def soccer_net_pipeline(args):
                 elif config.pose_detection_pipeline == 'mediapose':
                     print(f'Use [mediapose] to detect pose')
                     command = f"conda run --live-stream -n {config.media_pose_env} python media_pose.py --img-root / --json-file {input_json} --out-json {output_json}"
+
                 print(f'Run cmd [{command}]')
                 success = os.system(command) == 0
                 print("Done detecting pose")

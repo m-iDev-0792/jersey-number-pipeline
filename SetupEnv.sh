@@ -20,7 +20,7 @@ fi
 pip install numpy==1.26.4
 if [[ "$(uname -s)" == "Linux" ]]; then
   echo "Current platform is Linux"
-  ehco y | apt-get install libgl1
+  echo y | sudo apt-get install libgl1
 fi
 python SetupSoccerNetDataset.py
 python setup.py SoccerNet
