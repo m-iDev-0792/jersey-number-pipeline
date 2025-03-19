@@ -1,5 +1,9 @@
 pose_home = 'pose/ViTPose'
 pose_env = 'vitpose'
+alpha_pose_env = 'alpha_pose'
+media_pose_env = 'mediapose'
+
+pose_detection_pipeline = 'vitpose'
 
 str_home = 'str/parseq/'
 str_env = 'parseq2'

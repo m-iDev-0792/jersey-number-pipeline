@@ -108,6 +108,18 @@ def setup_pose(root):
         os.system(f'conda run --live-stream -n {env_name} pip install torch==1.9.0+cu111 torchvision==0.10.0+cu111 torchaudio==0.9.0 -f https://download.pytorch.org/whl/torch_stable.html')
     print(f'setup_pose(): ======================= end =======================')
 
+def setup_mediapipe_pose(root):
+    print(f'setup_pose(): ======================= start =======================')
+    env_name = cfg.media_pose_env
+    os.chdir(root)
+
+    os.chdir(root)
+    if not env_name in get_conda_envs():
+        make_conda_env(env_name, libs="python=3.9")
+        os.system(f"conda run --live-stream -n {env_name} conda install --name {env_name} pip")
+        os.system(f"conda run --live-stream -n {env_name} pip install mediapipe tqdm opencv-python opencv-contrib-python PyWavelets numpy xtcocotools")
+    print(f'setup_pose(): ======================= end =======================')
+
 # clone and install str
 # download the model
 def setup_str(root):
@@ -198,6 +210,7 @@ if __name__ == '__main__':
     # common for both datasets
     setup_sam(root_dir)
     setup_pose(root_dir)
+    setup_mediapipe_pose(root_dir)
     download_models_common(root_dir)
     setup_str(root_dir)
 
