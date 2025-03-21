@@ -37,7 +37,7 @@ dataset = {'SoccerNet':
                     },
                 'test_sr': {
                         'images': 'test_sr/images',
-                        'gt': 'test_sr/test_gt_test_sr.json',
+                        'gt': 'test_sr/test_sr_gt.json',
                         'feature_output_folder': 'out/SoccerNetResults/test_sr',
                         'illegible_result': 'illegible_test_sr.json',
                         'soccer_ball_list': 'soccer_ball_test_sr.json',
