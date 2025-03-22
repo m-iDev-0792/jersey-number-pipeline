@@ -351,9 +351,12 @@ def soccer_net_pipeline(args):
         with SimpleTimeRecorder("Predict numbers"):
             print("Predict numbers")
             image_dir = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['crops_folder'])
-
-            command = f"conda run --live-stream -n {config.str_env} python str.py  {config.dataset['SoccerNet']['str_model']}\
-                --data_root={image_dir} --batch_size=1 --inference --result_file {str_result_file}"
+            if config.number_recognition_pipeline == 'str':
+                command = f"conda run --live-stream -n {config.str_env} python str.py  {config.dataset['SoccerNet']['str_model']}\
+                    --data_root={image_dir} --batch_size=1 --inference --result_file {str_result_file}"
+            else:
+                command = f"conda run --live-stream -n {config.str_env} python CNNStr.py  {config.dataset['SoccerNet']['cnn_model']}\
+                                    --data_root={image_dir} --result_file {str_result_file}"
             print(f'Run cmd [{command}]')
             success = os.system(command) == 0
             print("Done predict numbers")
