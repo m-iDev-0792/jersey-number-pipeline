@@ -36,6 +36,22 @@ dataset = {'SoccerNet':
                         'jersey_id_result': 'jersey_id_results.json',
                         'final_result': 'final_results.json'
                     },
+                'test_sr': {
+                        'images': 'test_sr/images',
+                        'gt': 'test_sr/test_sr_gt.json',
+                        'feature_output_folder': 'out/SoccerNetResults/test_sr',
+                        'illegible_result': 'illegible_test_sr.json',
+                        'soccer_ball_list': 'soccer_ball_test_sr.json',
+                        'sim_filtered': 'test_sr/main_subject_0.4.json',
+                        'gauss_filtered': 'test_sr/main_subject_gauss_th=3.5_r=3.json',
+                        'legible_result': 'legible_test_sr.json',
+                        'raw_legible_result': 'raw_legible_resnet34_test_sr.json',
+                        'pose_input_json': 'pose_input_test_sr.json',
+                        'pose_output_json': 'pose_results_test_sr.json',
+                        'crops_folder': 'crops_test_sr',
+                        'jersey_id_result': 'jersey_id_results_test_sr.json',
+                        'final_result': 'final_results_test_sr.json'
+                    },
                  'val': {
                         'images': 'val/images',
                         'gt': 'val/val_gt.json',
@@ -50,6 +66,20 @@ dataset = {'SoccerNet':
                         'pose_output_json': 'pose_results_val.json',
                         'jersey_id_result': 'jersey_id_results_validation.json'
                     },
+                 'val_sr': {
+                     'images': 'val_sr/images',
+                     'gt': 'val_sr/val_sr_gt.json',
+                     'feature_output_folder': 'out/SoccerNetResults/val_sr',
+                     'illegible_result': 'illegible_val_sr.json',
+                     'legible_result': 'legible_val_sr.json',
+                     'soccer_ball_list': 'soccer_ball_val_sr.json',
+                     'crops_folder': 'crops_val_sr',
+                     'sim_filtered': 'val_sr/main_subject_0.4.json',
+                     'gauss_filtered': 'val_sr/main_subject_gauss_th=3.5_r=3.json',
+                     'pose_input_json': 'pose_input_val_sr.json',
+                     'pose_output_json': 'pose_results_val_sr.json',
+                     'jersey_id_result': 'jersey_id_results_validation_sr.json'
+                 },
                  'train': {
                      'images': 'train/images',
                      'gt': 'train/train_gt.json',
@@ -79,6 +109,22 @@ dataset = {'SoccerNet':
                         'final_result': 'challenge_final_results.json',
                         'raw_legible_result': 'challenge_raw_legible_vit.json'
                  },
+                'challenge_sr': {
+                        'images': 'challenge_sr/images',
+                        'gt': 'challenge_sr/challenge_sr_gt.json',
+                        'feature_output_folder': 'out/SoccerNetResults/challenge_sr',
+                        'illegible_result': 'illegible_challenge_sr.json',
+                        'soccer_ball_list': 'soccer_ball_challenge_sr.json',
+                        'sim_filtered': 'challenge_sr/main_subject_0.4.json',
+                        'gauss_filtered': 'challenge_sr/main_subject_gauss_th=3.5_r=3.json',
+                        'legible_result': 'legible_challenge_sr.json',
+                        'raw_legible_result': 'raw_legible_resnet34_challenge_sr.json',
+                        'pose_input_json': 'pose_input_challenge_sr.json',
+                        'pose_output_json': 'pose_results_challenge_sr.json',
+                        'crops_folder': 'crops_challenge_sr',
+                        'jersey_id_result': 'jersey_id_results_challenge_sr.json',
+                        'final_result': 'final_results_challenge_sr.json'
+                    },
                  'numbers_data': 'lmdb',
 
                  'legibility_model': "models/legibility_resnet34_soccer_20240215.pth",
