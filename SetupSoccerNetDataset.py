@@ -34,6 +34,17 @@ def batch_unzip(directory):
 
     print("\n✅ all files unzipped！")
 
+def delete_ds_store(folder_path):
+    for root, dirs, files in os.walk(folder_path):
+        for file in files:
+            if file == ".DS_Store":
+                file_path = os.path.join(root, file)
+                try:
+                    os.remove(file_path)
+                    print(f"Deleted：{file_path}")
+                except Exception as e:
+                    print(f"Failed to delete {file_path}，exception：{e}")
+
 root_dir = os.getcwd()
 mySNdl = SNdl(LocalDirectory="data")
 mySNdl.downloadDataTask(task="jersey-2023", split=["train", "test", "challenge"])
@@ -47,3 +58,4 @@ if os.path.exists(dataset_path):
 
     # unzip dataset
     batch_unzip(dataset_path)
+    delete_ds_store(dataset_path)
