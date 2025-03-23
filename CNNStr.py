@@ -139,14 +139,17 @@ def UnitTest():
 def run_inference(model, data_root, result_file):
     # load images one by one, save paths and result
     file_dir = os.path.join(data_root, 'imgs')
+    print(f'Processing directory {file_dir}')
     filenames = os.listdir(file_dir)
     filenames.sort()
+    print(f'Processing {len(filenames)} images')
     results = {}
     for filename in tqdm(filenames):
         if not filename.endswith(".jpg") and not filename.endswith(".png"):
             continue
         image_path = os.path.join(file_dir, filename)
         confidence, prediction = predict_single_image(image_path, model)
+        # print(f'Predicted image {filename} with confidence {confidence} with prediction {prediction}')
         results[filename] = {'label':f'{prediction}', 'confidence':confidence, 'raw': [], 'logits':[]}
     with open(result_file, 'w') as f:
         json.dump(results, f)
