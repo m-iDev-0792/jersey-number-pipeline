@@ -111,6 +111,8 @@ def predict_single_image(img_path, model):
     img_tensor = transform(img)
     img_tensor = img_tensor.unsqueeze(0)
     if torch.cuda.is_available():
+        img_tensor = img_tensor.gpu()
+    else:
         img_tensor = img_tensor.cpu()
     # forward pass
     outputs = model(img_tensor)
