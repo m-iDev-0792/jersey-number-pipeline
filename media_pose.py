@@ -111,7 +111,7 @@ def mediapipe_to_coco(landmarks, image_width, image_height):
         y = landmarks[idx].y * image_height
         visibility_flag = landmarks[idx].visibility  # 0 = not visible, 1 = visible
         # visibility_flag = 2 if visibility_flag > 0.5 else 1  # COCO uses 2 (visible), 1 (occluded), 0 (not labeled)
-        coco_keypoints.extend([x, y, visibility_flag])
+        coco_keypoints.append([x, y, visibility_flag])
 
     return coco_keypoints
 
@@ -162,7 +162,7 @@ def process_image(image_path, output_dir, enhanceAlgo = ''):
     top = max(min(vert), 0)
     bottom = max(max(vert), 0)
 
-    left = max(0, left - hori_padding)
+    left = min(max(0, left - hori_padding), w)
     right = min(w, right + hori_padding)
     hori = [left, right]
     left = int(max(min(hori), 0))
@@ -383,9 +383,13 @@ def main():
     print(f'media_pose.py: main() took {end_time - start_time:.4f} seconds')
 
 def UnitTest():
-    data_id = 0
+    data_id = 1
     input_directory = f"/Users/hezhenbang/Desktop/UBCO/DL-COSC519/GroupProject/hzb-jersey-number-pipeline/data/SoccerNet/test/images/{data_id}"
     output_directory = f"/Users/hezhenbang/Desktop/UBCO/DL-COSC519/GroupProject/hzb-jersey-number-pipeline/data/SoccerNet/MediaPipe/images/{data_id}/mc_{model_complexity}"
+
+    # input_directory = f"/Users/hezhenbang/Downloads/final_outputs/sample_frames2_sr"
+    # output_directory = f"/Users/hezhenbang/Downloads/final_outputs/sample_frames2_sr_cropped"
+
     if os.path.exists(output_directory):
         import shutil
         shutil.rmtree(output_directory)
