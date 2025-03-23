@@ -140,6 +140,8 @@ def get_points(pose):
     if len(points) < 12:
         #print("not enough points")
         return []
+    if len(points) >=12: # be compatible with wrongly exported points data
+        points = np.array(points).reshape(-1, 3).tolist()
     relevant = [points[6], points[5], points[11], points[12]]
     result = []
     for r in relevant:
