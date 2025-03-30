@@ -4,6 +4,7 @@ alpha_pose_env = 'alpha_pose'
 media_pose_env = 'mediapose'
 
 pose_detection_pipeline = 'vitpose'
+openpose_bin_dir = './openpose/bin/OpenPoseDemo.exe'
 number_recognition_pipeline = 'str' #str or CNN
 
 str_home = 'str/parseq/'

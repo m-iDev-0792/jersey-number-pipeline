@@ -322,6 +322,9 @@ def soccer_net_pipeline(args):
                 elif config.pose_detection_pipeline == 'mediapose':
                     print(f'Use [mediapose] to detect pose')
                     command = f"conda run --live-stream -n {config.media_pose_env} python media_pose.py --img-root / --json-file {input_json} --out-json {output_json}"
+                elif config.pose_detection_pipeline == 'openpose':
+                    print(f'Use [openpose] to detect pose')
+                    command = f"conda run --live-stream -n {config.pose_env} python openpose.py --img-root / --json-file {input_json} --out-json {output_json} --data-part {args.part}"
 
                 print(f'Run cmd [{command}]')
                 success = os.system(command) == 0
@@ -355,7 +358,7 @@ def soccer_net_pipeline(args):
                 command = f"conda run --live-stream -n {config.str_env} python str.py  {config.dataset['SoccerNet']['str_model']}\
                     --data_root={image_dir} --batch_size=1 --inference --result_file {str_result_file}"
             else:
-                command = f"conda run --live-stream -n {config.str_env} python CNNStr.py  {config.dataset['SoccerNet']['cnn_model']}\
+                command = f"conda run --live-stream -n {config.str_env} python CNNStr.py  --model_path {config.dataset['SoccerNet']['cnn_model']}\
                                     --data_root={image_dir} --result_file {str_result_file}"
             print(f'Run cmd [{command}]')
             success = os.system(command) == 0
