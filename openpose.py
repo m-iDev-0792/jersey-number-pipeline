@@ -20,7 +20,7 @@ coco17_keypoints = ['Nose', 'Leye', 'Reye', 'Lear', 'Rear', 'Lsho', 'Rsho', 'Lel
 coco18_keypoints2 = ['Nose', 'Neck', 'Lsho', 'Lelb', 'Lwri', 'Rsho', 'Relb', 'Rwri','Lhip', 'Lkne', 'Lank', 'Rhip', 'Rkne', 'Rank', 'Reye', 'Leye', 'Rear', 'Lear']
 coco18_keypoints = ['Nose', 'Neck', 'Rsho', 'Relb', 'Rwri', 'Lsho', 'Lelb', 'Lwri','Rhip', 'Rkne', 'Rank', 'Lhip', 'Lkne', 'Lank', 'Leye', 'Reye', 'Lear', 'Rear']
 
-coco18_to_coco17_idx_map = []
+coco18_to_coco17_idx_map = [00, 14, 15, 17, 16, 5, 2, 6, 3, 7, 4, 11, 8, 12, 9, 13, 10]
 coco17_to_coco18_idx_map = []
 
 def COCO18_to_COCO17(keypoints18):
