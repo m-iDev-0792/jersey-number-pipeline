@@ -41,7 +41,7 @@ def COCO18_to_COCO17(keypoints18):
         print(f'coco18_to_coco17_idx_map = [{map_str[:-1]}]')
     keypoints18 = np.array(keypoints18).reshape(-1, 3)
     keypoints17 = keypoints18[coco18_to_coco17_idx_map]
-    return keypoints17.flatten()
+    return keypoints17.tolist() #keypoints17.flatten().tolist()
 
 def main():
     parser = ArgumentParser()
@@ -114,11 +114,15 @@ def main():
         openpose_bin_dir = openpose_bin_dir.replace('/', '\\')
         print(f'Current platform is Windows, reformat openpose_bin_dir to {openpose_bin_dir}')
     print(f'Ready to perform pose estimation on {len(parent_dirs)} folders')
+    if configuration.openpose_use_cache:
+        print('OpenPose cache will be used, if you want to regenerate poses please delete cache folders for set configuration.openpose_use_cache to False')
     for _dir in tqdm(parent_dirs):
         basename = os.path.basename(_dir)
         out_dir = os.path.join(temp_dir, basename)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
+        elif configuration.openpose_use_cache:
+            continue
         command = f'{openpose_bin_dir} --image_dir {_dir} --display 0 --render_pose 0 --model_pose COCO --write_json {out_dir}/' # --write_images
         os.system(command)
 
