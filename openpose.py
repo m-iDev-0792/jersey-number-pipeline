@@ -12,6 +12,9 @@ from datetime import timedelta
 from argparse import ArgumentParser
 from xtcocotools.coco import COCO
 import concurrent.futures
+
+from configuration import openpose_bin_dir
+
 #                     0      1        2       3       4       5       6       7       8       9       10     11      12      13       14      15      16     17
 coco17_keypoints = ['Nose', 'Leye', 'Reye', 'Lear', 'Rear', 'Lsho', 'Rsho', 'Lelb', 'Relb', 'Lwri', 'Rwri', 'Lhip', 'Rhip', 'Lkne', 'Rkne', 'Lank', 'Rank']
 coco18_keypoints2 = ['Nose', 'Neck', 'Lsho', 'Lelb', 'Lwri', 'Rsho', 'Relb', 'Rwri','Lhip', 'Lkne', 'Lank', 'Rhip', 'Rkne', 'Rank', 'Reye', 'Leye', 'Rear', 'Lear']
@@ -88,27 +91,35 @@ def main():
     img_keys = list(coco.imgs.keys())
     start_time = time.time()
 
+    cwd_backup = os.getcwd()
+    print(f'current working directory: {cwd_backup}, now change to "openpose"')
+    os.chdir('openpose')
+
     parent_dirs = set()
     for img_key in img_keys:
         image = coco.loadImgs(img_key)[0]
         image_path = os.path.join(args.img_root, image['file_name'])
         image_par_path = os.path.normpath(os.path.dirname(image_path))
         if image_par_path not in parent_dirs and os.path.exists(image_par_path) and os.path.isdir(image_par_path):
-            parent_dirs.add(image_path)
+            parent_dirs.add(image_par_path)
 
     print(f'Extracted {len(parent_dirs)} folders')
     temp_dir = f'./openpose-cache/{args.data_part}'
     if not os.path.exists(temp_dir):
         os.makedirs(temp_dir)
         print(f'mkdir {temp_dir}')
-
+    import platform
+    openpose_bin_dir = configuration.openpose_bin_dir
+    if platform.system() == 'Windows':
+        openpose_bin_dir = openpose_bin_dir.replace('/', '\\')
+        print(f'Current platform is Windows, reformat openpose_bin_dir to {openpose_bin_dir}')
     print(f'Ready to perform pose estimation on {len(parent_dirs)} folders')
-    for dir in tqdm(parent_dirs):
-        basename = os.path.basename(dir)
+    for _dir in tqdm(parent_dirs):
+        basename = os.path.basename(_dir)
         out_dir = os.path.join(temp_dir, basename)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-        command = f'{configuration.openpose_bin_dir} --image_dir {dir} --display 0 --render_pose 0 --model_pose COCO --write_json {out_dir}/' # --write_images
+        command = f'{openpose_bin_dir} --image_dir {_dir} --display 0 --render_pose 0 --model_pose COCO --write_json {out_dir}/' # --write_images
         os.system(command)
 
     ###################################
@@ -134,8 +145,8 @@ def main():
             shutil.copy(image_name, unprocessed_temp_dir)
     if len(not_processed_files) > 0:
         print(f'There are still unprocessed images: {len(not_processed_files)} images, begin to perform pose estimation')
-        command = f'{configuration.openpose_bin_dir} --image_dir {not_processed_files} --display 0 --render_pose 0 --model_pose COCO --write_json {not_processed_files}/'  # --write_images
-        print(command)
+        command = f'{openpose_bin_dir} --image_dir {not_processed_files} --display 0 --render_pose 0 --model_pose COCO --write_json {not_processed_files}/'  # --write_images
+        # print(command)
         os.system(command)
         print(f'Pose estimation ended')
     ###################################
@@ -174,6 +185,8 @@ def main():
         print(f'openpose.py: main() there is no valid output path given!')
     end_time = time.time()
     print(f'openpose.py: main() took {end_time - start_time:.4f} seconds')
+    os.chdir(cwd_backup)
+    print(f'Change cwd back to {cwd_backup}')
 
 if __name__ == "__main__":
     main()
