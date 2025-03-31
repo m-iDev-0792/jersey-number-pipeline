@@ -119,6 +119,10 @@ def get_soccer_net_legibility_results(args, use_filtered = False, filter = 'sim'
 
 
 def generate_json_for_pose_estimator(args, legible = None):
+    output_json = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['pose_input_json'])
+    if os.path.exists(output_json):
+        print(f'use cache at {output_json}')
+        return
     all_files = []
     if not legible is None:
         for key in legible.keys():
@@ -135,7 +139,6 @@ def generate_json_for_pose_estimator(args, legible = None):
             for img in imgs:
                 all_files.append(os.path.join(track_dir, img))
 
-    output_json = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['pose_input_json'])
     helpers.generate_json(all_files, output_json)
 
 
