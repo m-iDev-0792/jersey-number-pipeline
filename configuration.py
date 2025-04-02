@@ -111,6 +111,22 @@ dataset = {'SoccerNet':
                         'final_result': 'challenge_final_results.json',
                         'raw_legible_result': 'challenge_raw_legible_vit.json'
                  },
+                'demo': {
+                        'images': 'demo/images',
+                        'feature_output_folder': 'out/SoccerNetResults/demo',
+                        'gt': '',
+                        'illegible_result': 'demo_illegible.json',
+                        'soccer_ball_list': 'demo_soccer_ball.json',
+                        'sim_filtered': 'demo/main_subject_0.4.json',
+                        'gauss_filtered': 'demo/main_subject_gauss_th=3.5_r=3.json',
+                        'legible_result': 'demo_legible.json',
+                        'pose_input_json': 'demo_pose_input.json',
+                        'pose_output_json': 'demo_pose_results.json',
+                        'crops_folder': 'demo_crops',
+                        'jersey_id_result': 'demo_jersey_id_results.json',
+                        'final_result': 'demo_final_results.json',
+                        'raw_legible_result': 'demo_raw_legible_vit.json'
+                 },
                 'challenge_sr': {
                         'images': 'challenge_sr/images',
                         'gt': 'challenge_sr/challenge_sr_gt.json',

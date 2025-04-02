@@ -127,7 +127,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+demo/video_frames
+demo/*.avi
 # Spyder project settings
 .spyderproject
 .spyproject
