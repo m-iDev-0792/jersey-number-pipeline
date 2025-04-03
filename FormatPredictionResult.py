@@ -34,4 +34,4 @@ def sort_json_file(input_file, output_file=None, indent=4):
         sys.exit(1)
 
 if __name__ == "__main__":
-    sort_json_file("/Users/hezhenbang/Downloads/final_results_challenge_sr_formatted.json", "/Users/hezhenbang/Downloads/final_results_challenge_sr_formatted.json", 4)
+    sort_json_file("/Users/hezhenbang/Downloads/final_results_challenge_sr-2.json", "/Users/hezhenbang/Downloads/final_results_challenge_sr-2_formatted.json", 4)

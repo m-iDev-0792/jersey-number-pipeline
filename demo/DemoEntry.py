@@ -6,7 +6,48 @@ from PIL import Image, ImageTk
 import time
 import os
 import threading
+import json
+import platform
 
+final_result_path = 'out/SoccerNetResult/demo_final_results.json'
+def CheckRunResult():
+    result = {'0':'-1'}
+    result_txt = ''
+    if os.path.exists(final_result_path):
+        with open(final_result_path, 'r', encoding='utf-8') as f:
+            result = json.load(f)
+            result_txt = ''
+    else:
+        print(f'CheckRunResult(): {final_result_path} does not exist!')
+    for item in result:
+        result_txt += f'Prediction is {result[item]}\n'
+        break
+    root = tk.Tk()
+    root.title("Prediction")
+    root.geometry("600x400")  # 设置窗口大小
+
+    # 创建标签并设置大号字体和红色
+    label = tk.Label(root, text=result_txt, font=("Arial", 80, "bold"), fg="red")
+    label.pack(expand=True)
+    root.mainloop()
+
+
+def CallPipeline():
+    os.chdir('../')
+    if os.path.exists(final_result_path):
+        print(f'CallPipeline(): {final_result_path} exists, remove it now')
+        os.remove(final_result_path)
+    print(f'CallPipeline(): current working directory = {os.getcwd()}')
+    os.system('echo current working directory')
+    if platform.system() == 'Windows':
+        os.system('dir')
+    else:
+        os.system('pwd')
+    command = f'conda run --live-stream -n SoccerNet python main.py SoccerNet demo'
+    # os.system(command)
+
+
+    pass
 
 class VideoRecorderApp:
     def __init__(self, window):
@@ -105,6 +146,8 @@ class VideoRecorderApp:
 
         self.extract_frames()
         #todo. call pipeline here
+        CallPipeline()
+        CheckRunResult()
 
     def extract_frames(self):
         cap = cv2.VideoCapture(self.video_file)
