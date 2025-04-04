@@ -8,6 +8,94 @@ import os
 import threading
 import json
 import platform
+import cv2
+import mediapipe as mp
+import numpy as np
+import configuration
+
+segmentation = None
+pose = None
+
+G_OUTPUT_DIR="../data/SoccerNet/demo/images/0"
+
+def crop_human(image_path, output_path):
+    if 'DS_Store' in image_path:
+        return None
+    image = cv2.imread(image_path)
+    h, w, _ = image.shape
+
+    # Initialize MediaPipe Selfie Segmentation
+    mp_selfie_segmentation = mp.solutions.selfie_segmentation
+    with mp_selfie_segmentation.SelfieSegmentation(model_selection=1) as segmenter:
+        # Convert image to RGB
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        results = segmenter.process(image_rgb)
+
+        # Get segmentation mask
+        mask = results.segmentation_mask
+        binary_mask = (mask > 0.5).astype(np.uint8) * 255  # Convert to binary (0 or 255)
+
+        # Find contours and get bounding box
+        contours, _ = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if not contours:
+            print("No human detected.")
+            return None
+
+        x, y, w, h = cv2.boundingRect(max(contours, key=cv2.contourArea))  # Get largest contour (person)
+
+        # Crop the image
+        cropped_image = image[y:y + h, x:x + w]
+
+        # Save and return the cropped image
+        cv2.imwrite(output_path, cropped_image)
+        print(f"Cropped image saved as {output_path}")
+        return cropped_image
+
+def crop_human_from_loaded_img(image):
+    h, w, _ = image.shape
+    mp_selfie_segmentation = mp.solutions.selfie_segmentation
+    with mp_selfie_segmentation.SelfieSegmentation(model_selection=1) as segmenter:
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        results = segmenter.process(image_rgb)
+        mask = results.segmentation_mask
+        binary_mask = (mask > 0.5).astype(np.uint8) * 255  # Convert to binary (0 or 255)
+        contours, _ = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if not contours:
+            print("No human detected.")
+            return None
+        x, y, w, h = cv2.boundingRect(max(contours, key=cv2.contourArea))  # Get largest contour (person)
+        cropped_image = image[y:y + h, x:x + w]
+        return cropped_image
+
+def ApplyESRGan():
+    if configuration.pose_detection_pipeline!='openpose' and configuration.pose_detection_pipeline!='OpenPose':
+        return
+    if os.path.exists(G_OUTPUT_DIR):
+        print(f'ApplyESRGan(): OpenPose not found, skipping...')
+        return
+    output_dir = "../data/SoccerNet/demo/images"
+    input_dir = "../data/SoccerNet/demo/temp"
+    if os.path.exists(input_dir):
+        shutil.rmtree(input_dir)
+    os.makedirs(input_dir)
+
+    for subdir in os.listdir(output_dir):
+        subdir_path = os.path.join(output_dir, subdir)
+        dst_path = os.path.join(input_dir, subdir)
+        print(f'ApplyESRGan(): move {subdir_path} to {dst_path}')
+        shutil.move(subdir_path, dst_path)
+
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for subdir in os.listdir(input_dir):
+        subdir_path = os.path.join(input_dir, subdir)
+        outsub_dir = os.path.join(output_dir, subdir)
+        if not os.path.exists(outsub_dir):
+            os.makedirs(outsub_dir)
+        cmd = f'..\\realesrgan\\realesrgan-ncnn-vulkan.exe -i {subdir_path} -o {outsub_dir} -s 2'
+        print(f'Running command: {cmd}')
+        os.system(cmd)
 
 final_result_path = 'out/SoccerNetResult/demo_final_results.json'
 def CheckRunResult():
@@ -73,7 +161,7 @@ class VideoRecorderApp:
         self.countdown_label.pack()
 
         # 创建输出文件夹
-        self.output_folder = "../data/SoccerNet/demo/images/0"
+        self.output_folder = G_OUTPUT_DIR
         if os.path.exists(self.output_folder):
             print(f'Output folder {self.output_folder} already exists! Now clean it')
             shutil.rmtree(self.output_folder)
@@ -146,6 +234,7 @@ class VideoRecorderApp:
 
         self.extract_frames()
         #todo. call pipeline here
+        ApplyESRGan()
         CallPipeline()
         CheckRunResult()
 
@@ -162,6 +251,7 @@ class VideoRecorderApp:
 
             if frame_count % frame_interval == 0:
                 frame_filename = os.path.join(self.output_folder, f"frame_{frame_count:06d}.jpg")
+                frame = crop_human_from_loaded_img(frame)
                 cv2.imwrite(frame_filename, frame)
 
             frame_count += 1
