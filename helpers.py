@@ -12,6 +12,7 @@ import random
 import shutil
 from pathlib import Path
 from scipy.special import softmax as softmax
+import tkinter as tk
 
 json_img_template = { "id": 0,
             "file_name": "",
@@ -935,7 +936,9 @@ def show_images_from_folder(folder_path, fps=5, window_title="图像展示", blo
             return
 
         delay = int(1000 / fps)  # 每帧间隔时间（毫秒）
+        idx = 0
         for filename in image_files:
+            idx = idx + 1
             image_path = os.path.join(folder_path, filename)
             image = cv2.imread(image_path)
             if image is None:
@@ -943,7 +946,7 @@ def show_images_from_folder(folder_path, fps=5, window_title="图像展示", blo
                 continue
 
             display_image = image.copy()
-            text = f"{window_title} | 总图像数: {num_images}"
+            text = f"{window_title}#{idx}"
             cv2.putText(display_image, text, (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
@@ -989,14 +992,16 @@ def show_images_from_list(image_list, fps=5, window_title="图像展示", blocki
             return
 
         delay = int(1000 / fps)  # 每帧间隔时间（毫秒）
+        idx = 0
         for image_path in image_list:
+            idx = idx + 1
             image = cv2.imread(image_path)
             if image is None:
                 print(f"无法读取图像: {image_path}")
                 continue
 
             display_image = image.copy()
-            text = f"{window_title} | 总图像数: {num_images}"
+            text = f"{window_title}#{idx}"
             cv2.putText(display_image, text, (10, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
