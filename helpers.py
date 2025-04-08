@@ -976,7 +976,7 @@ def show_crops_prediction(predict_file, crops_folder):
             cv2.putText(
                 image,
                 label,
-                (5, 5),  # Position (x, y)
+                (5, 30),  # Position (x, y)
                 cv2.FONT_HERSHEY_SIMPLEX,  # Font
                 1.0,  # Font scale
                 (0, 255, 0),  # Text color (BGR)

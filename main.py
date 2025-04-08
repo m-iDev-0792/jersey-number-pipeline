@@ -8,6 +8,7 @@ from tqdm import tqdm
 import configuration as config
 from pathlib import Path
 from helpers import SimpleTimeRecorder
+import shutil
 
 def get_soccer_net_raw_legibility_results(args, use_filtered = True, filter = 'gauss', exclude_balls=True):
     root_dir = config.dataset['SoccerNet']['root_dir']
@@ -276,7 +277,7 @@ def soccer_net_pipeline(args):
                 success = False
             print("Done classifying legibility")
         if config.demo_mode:
-            helpers.show_images_from_list(legible_dict["0"], "legible")
+            helpers.show_images_from_list(legible_dict["0"], 5, "legible")
 
     #3.5 evaluate tracklet legibility results
     if args.pipeline['legible_eval'] and success:
@@ -354,6 +355,31 @@ def soccer_net_pipeline(args):
             print("Done generating crops")
         if config.demo_mode:
             helpers.show_images_from_folder(crops_destination_dir,5,'crops')
+
+    if config.pose_detection_pipeline == 'openpose':
+        with SimpleTimeRecorder("Upscale crops"):
+            sr_output = crops_destination_dir
+            sr_input = crops_destination_dir + "_temp"
+            if os.path.exists(sr_input):
+                print(f'Remove {sr_input}')
+                shutil.rmtree(sr_input)
+            print(f'Move {sr_output} to {sr_input}')
+            shutil.move(sr_output, sr_input)
+            if not os.path.exists(sr_output):
+                print(f'Make {sr_output}')
+                os.makedirs(sr_output)
+
+            pwd = os.getcwd()
+            os.chdir("Real-ESRGAN")
+            c_sr_input = os.path.join('..', sr_input)
+            c_sr_output = os.path.join('..', sr_output)
+            sr_command = f"python inference_realesrgan.py -n RealESRGAN_x4plus -i {c_sr_input} -o {c_sr_output} -s 2"
+            command = f"conda run --live-stream -n ESRGAN {sr_command}"
+            print(f'Run cmd [{command}]')
+            os.system(command)
+            os.chdir(pwd)
+            if config.demo_mode:
+                helpers.show_images_from_folder(crops_destination_dir, 5, 'crops_sr')
 
     str_result_file = os.path.join(config.dataset['SoccerNet']['working_dir'],
                                    config.dataset['SoccerNet'][args.part]['jersey_id_result'])

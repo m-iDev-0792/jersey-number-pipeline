@@ -97,8 +97,8 @@ def ApplyESRGan():
         print(f'Running command: {cmd}')
         os.system(cmd)
 
-final_result_path = 'out/SoccerNetResult/demo_final_results.json'
-def CheckRunResult():
+
+def CheckRunResult(final_result_path = 'out/SoccerNetResult/demo_final_results.json'):
     result = {'0':'-1'}
     result_txt = ''
     if os.path.exists(final_result_path):
