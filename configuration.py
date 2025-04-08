@@ -3,6 +3,8 @@ pose_env = 'vitpose'
 alpha_pose_env = 'alpha_pose'
 media_pose_env = 'mediapose'
 
+
+demo_mode = False
 pose_detection_pipeline = 'vitpose'
 openpose_bin_dir = './bin/OpenPoseDemo.exe'
 openpose_use_cache = True
