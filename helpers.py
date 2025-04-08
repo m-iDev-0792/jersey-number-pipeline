@@ -13,6 +13,7 @@ import shutil
 from pathlib import Path
 from scipy.special import softmax as softmax
 import tkinter as tk
+import configuration
 
 json_img_template = { "id": 0,
             "file_name": "",
@@ -32,6 +33,8 @@ json_annotation_template = {"id": 0,
 # Constants for pose-based torso cropping
 PADDING = 5
 CONFIDENCE_THRESHOLD = 0.4
+if configuration.pose_detection_pipeline == 'openpose':
+    CONFIDENCE_THRESHOLD = 0.2
 TS = 2.367
 HEIGHT_MIN = 35
 WIDTH_MIN = 30
@@ -140,7 +143,7 @@ def generate_json(file_names, json_file_path):
 def get_points(pose):
     points = pose["keypoints"]
     if len(points) < 12:
-        #print("not enough points")
+        print(f"not enough points at {pose}")
         return []
     if len(points) >=12: # be compatible with wrongly exported points data
         points = np.array(points).reshape(-1, 3).tolist()
@@ -148,7 +151,7 @@ def get_points(pose):
     result = []
     for r in relevant:
         if r[2] < CONFIDENCE_THRESHOLD:
-            #print(f"confidence {r[2]}")
+            print(f"confidence {r[2]} is below {CONFIDENCE_THRESHOLD} at {relevant}")
             return []
         result.append(r[:2])
     return result
@@ -1019,7 +1022,7 @@ def show_images_from_list(image_list, fps=5, window_title="图像展示", blocki
         t.start()
 
 
-def check_run_result(final_result_path = 'out/SoccerNetResult/demo_final_results.json'):
+def check_run_result(final_result_path = 'out/SoccerNetResults/demo_final_results.json'):
     result = {'0':'-1'}
     result_txt = ''
     if os.path.exists(final_result_path):
