@@ -1,6 +1,7 @@
 import json
 from copy import deepcopy
 import cv2
+import threading
 import os
 import json
 import numpy as np
@@ -917,6 +918,47 @@ class SimpleTimeRecorder:
 
         with open(self.json_file, "w") as f:
             json.dump(logs, f, indent=4)
+
+
+def show_images_from_folder(folder_path, fps=5, window_title="图像展示", blocking=True):
+    def display_images():
+        # 获取图像文件列表并按字母排序
+        image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
+        image_files = sorted([
+            f for f in os.listdir(folder_path)
+            if os.path.splitext(f)[1].lower() in image_extensions
+        ])
+
+        num_images = len(image_files)
+        if num_images == 0:
+            print("该文件夹中没有图像文件。")
+            return
+
+        delay = int(1000 / fps)  # 每帧间隔时间（毫秒）
+        for filename in image_files:
+            image_path = os.path.join(folder_path, filename)
+            image = cv2.imread(image_path)
+            if image is None:
+                print(f"无法读取图像: {filename}")
+                continue
+
+            display_image = image.copy()
+            text = f"{window_title} | 总图像数: {num_images}"
+            cv2.putText(display_image, text, (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+            cv2.imshow(window_title, display_image)
+            if cv2.waitKey(delay) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+
+    if blocking:
+        display_images()
+    else:
+        t = threading.Thread(target=display_images)
+        t.daemon = True  # 程序退出时自动关闭线程
+        t.start()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
