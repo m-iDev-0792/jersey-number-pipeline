@@ -70,7 +70,7 @@ def crop_human_from_loaded_img(image):
 def ApplyESRGan():
     if configuration.pose_detection_pipeline!='openpose' and configuration.pose_detection_pipeline!='OpenPose':
         return
-    if os.path.exists(G_OUTPUT_DIR):
+    if not os.path.exists('../openpose'):
         print(f'ApplyESRGan(): OpenPose not found, skipping...')
         return
     output_dir = "../data/SoccerNet/demo/images"
@@ -93,7 +93,7 @@ def ApplyESRGan():
         outsub_dir = os.path.join(output_dir, subdir)
         if not os.path.exists(outsub_dir):
             os.makedirs(outsub_dir)
-        cmd = f'..\\realesrgan\\realesrgan-ncnn-vulkan.exe -i {subdir_path} -o {outsub_dir} -s 2'
+        cmd = f'..\\realesrgan\\realesrgan-ncnn-vulkan.exe -i {subdir_path} -o {outsub_dir} -s 2 -f jpg'
         print(f'Running command: {cmd}')
         os.system(cmd)
 
@@ -112,7 +112,7 @@ def CheckRunResult():
         break
     root = tk.Tk()
     root.title("Prediction")
-    root.geometry("600x400")  # 设置窗口大小
+    root.geometry("800x400")  # 设置窗口大小
 
     # 创建标签并设置大号字体和红色
     label = tk.Label(root, text=result_txt, font=("Arial", 80, "bold"), fg="red")
@@ -250,9 +250,10 @@ class VideoRecorderApp:
                 break
 
             if frame_count % frame_interval == 0:
-                frame_filename = os.path.join(self.output_folder, f"frame_{frame_count:06d}.jpg")
+                frame_filename = os.path.join(self.output_folder, f"0_{frame_count:06d}.jpg")
                 frame = crop_human_from_loaded_img(frame)
-                cv2.imwrite(frame_filename, frame)
+                if frame is not None:
+                    cv2.imwrite(frame_filename, frame)
 
             frame_count += 1
 
@@ -270,3 +271,7 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = VideoRecorderApp(root)
     root.mainloop()
+    # gap = 50.8 / 31
+    # for i in range(0, 31):
+    #     v = gap * (i+1)
+    #     print(f'value for {i+1} = {v}')
