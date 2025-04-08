@@ -959,6 +959,81 @@ def show_images_from_folder(folder_path, fps=5, window_title="图像展示", blo
         t = threading.Thread(target=display_images)
         t.daemon = True  # 程序退出时自动关闭线程
         t.start()
+def show_crops_prediction(predict_file, crops_folder):
+    with open(predict_file, "r") as f:
+        predicts = json.load(f)
+    for file in predicts:
+        image_path = os.path.join(crops_folder, file)
+        image = cv2.imread(image_path)
+        if image is not None:
+            label = predicts[file]["label"]
+            cv2.putText(
+                image,
+                label,
+                (5, 5),  # Position (x, y)
+                cv2.FONT_HERSHEY_SIMPLEX,  # Font
+                1.0,  # Font scale
+                (0, 255, 0),  # Text color (BGR)
+                2,  # Thickness
+                cv2.LINE_AA  # Line type
+            )
+            cv2.imshow(label, image)
+            cv2.waitKey(200)
+            cv2.destroyAllWindows()
+
+def show_images_from_list(image_list, fps=5, window_title="图像展示", blocking=True ):
+    def display_images():
+        num_images = len(image_list)
+        if num_images == 0:
+            print("该文件夹中没有图像文件。")
+            return
+
+        delay = int(1000 / fps)  # 每帧间隔时间（毫秒）
+        for image_path in image_list:
+            image = cv2.imread(image_path)
+            if image is None:
+                print(f"无法读取图像: {image_path}")
+                continue
+
+            display_image = image.copy()
+            text = f"{window_title} | 总图像数: {num_images}"
+            cv2.putText(display_image, text, (10, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+
+            cv2.imshow(window_title, display_image)
+            if cv2.waitKey(delay) & 0xFF == ord('q'):
+                break
+
+        cv2.destroyAllWindows()
+
+    if blocking:
+        display_images()
+    else:
+        t = threading.Thread(target=display_images)
+        t.daemon = True  # 程序退出时自动关闭线程
+        t.start()
+
+
+def check_run_result(final_result_path = 'out/SoccerNetResult/demo_final_results.json'):
+    result = {'0':'-1'}
+    result_txt = ''
+    if os.path.exists(final_result_path):
+        with open(final_result_path, 'r', encoding='utf-8') as f:
+            result = json.load(f)
+            result_txt = ''
+    else:
+        print(f'CheckRunResult(): {final_result_path} does not exist!')
+    for item in result:
+        result_txt += f'Prediction is {result[item]}\n'
+        break
+    root = tk.Tk()
+    root.title("Prediction")
+    root.geometry("800x400")  # 设置窗口大小
+
+    # 创建标签并设置大号字体和红色
+    label = tk.Label(root, text=result_txt, font=("Arial", 80, "bold"), fg="red")
+    label.pack(expand=True)
+    root.mainloop()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

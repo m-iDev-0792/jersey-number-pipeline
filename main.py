@@ -275,6 +275,8 @@ def soccer_net_pipeline(args):
                 print(f'Failed to run legibility classifier:{error}')
                 success = False
             print("Done classifying legibility")
+        if config.demo_mode:
+            helpers.show_images_from_list(legible_dict["0"], "legible")
 
     #3.5 evaluate tracklet legibility results
     if args.pipeline['legible_eval'] and success:
@@ -336,6 +338,7 @@ def soccer_net_pipeline(args):
 
     #6. generate cropped images
     if args.pipeline['crops'] and success:
+        crops_destination_dir = ''
         with SimpleTimeRecorder("Generate crops"):
             print("Generate crops")
             try:
@@ -349,6 +352,8 @@ def soccer_net_pipeline(args):
                 print(e)
                 success = False
             print("Done generating crops")
+        if config.demo_mode:
+            helpers.show_images_from_folder(crops_destination_dir,5,'crops')
 
     str_result_file = os.path.join(config.dataset['SoccerNet']['working_dir'],
                                    config.dataset['SoccerNet'][args.part]['jersey_id_result'])
@@ -366,6 +371,8 @@ def soccer_net_pipeline(args):
             print(f'Run cmd [{command}]')
             success = os.system(command) == 0
             print("Done predict numbers")
+        if config.demo_mode:
+            helpers.show_crops_prediction(str_result_file, crops_destination_dir)
 
     #str_result_file = os.path.join(config.dataset['SoccerNet']['working_dir'], "val_jersey_id_predictions.json")
     if args.pipeline['combine'] and success:
@@ -384,6 +391,8 @@ def soccer_net_pipeline(args):
             final_results_path = os.path.join(config.dataset['SoccerNet']['working_dir'], config.dataset['SoccerNet'][args.part]['final_result'])
             with open(final_results_path, 'w') as f:
                 json.dump(consolidated_dict, f)
+        if config.demo_mode:
+            helpers.check_run_result()
 
     if args.pipeline['eval'] and success:
         with SimpleTimeRecorder("Evaluate accuracy"):
