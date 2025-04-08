@@ -185,7 +185,7 @@ def main():
             print(f'file {openpose_json_path} does not exist')
             keypoints17 = []
             for i in range(0, 17):
-                keypoints17.append([0, 0, 0])
+                keypoints17.append([0, 0, 1])
         else:
             with open(openpose_json_path, 'r') as f:
                 json_data = json.load(f)
@@ -197,7 +197,7 @@ def main():
                     print(f'can not find people in {openpose_json_path}')
                     keypoints17 = []
                     for i in range(0, 17):
-                        keypoints17.append([0, 0, 0])
+                        keypoints17.append([0, 0, 1])
         result = {"img_name": image['file_name'], "id": image_id, "keypoints": keypoints17}
         results.append(result)
     pass
